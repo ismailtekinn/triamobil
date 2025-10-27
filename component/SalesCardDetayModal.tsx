@@ -62,6 +62,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   const [selectedIscontoType, setSelectedIscontoType] = useState("Yüzdesel"); // varsayılan seçenek
   const dropdownOptions = ["Yüzdesel", "Tutarsal", "Alınacak Tutar"];
 
+  console.log("İsconto modalında data console yazdırılıyor: ",data)
   const {
     isDiscountApplied,
     setIsDiscountApplied,
@@ -80,7 +81,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
         ? {
             ...p,
             Stock: count,
-            Tutar: count * (p.Price ?? 0), // yeni tutarı hesapla
+            Tutar: count * (p.Price ?? 0), 
           }
         : p
     );
@@ -117,14 +118,14 @@ const ActionModal: React.FC<ActionModalProps> = ({
         selectedIscontoType === "Yüzdesel"
           ? IndirimTipi.YuzdeIndirim
           : selectedIscontoType === "Tutarsal"
-          ? IndirimTipi.TutarIndirimi
-          : IndirimTipi.OtoYuzdeIndirim,
+            ? IndirimTipi.TutarIndirimi
+            : IndirimTipi.OtoYuzdeIndirim,
       Isconto:
         selectedIscontoType === "Yüzdesel"
           ? `% ${iscontoForm.iscontoOran}  ind.`
           : selectedIscontoType === "Tutarsal"
-          ? `% ${iscontoForm.iscontoOran} tutar ind.`
-          : iscontoForm.inputValue,
+            ? `% ${iscontoForm.iscontoOran} tutar ind.`
+            : iscontoForm.inputValue,
       IndTutar: iscontoForm.iscontoTutar,
     }));
     resetForm();
@@ -235,22 +236,31 @@ const ActionModal: React.FC<ActionModalProps> = ({
       p.Index === data.itemId
         ? {
             ...p,
+            // Isconto:
+            //   selectedIscontoType === "Yüzdesel"
+            //     ? `% ${iscontoForm.inputValue}  ind.`
+            //     : selectedIscontoType === "Tutarsal"
+            //     ? `% ${iscontoForm.inputValue} tutar ind.`
+            //     : iscontoForm.inputValue,
             Isconto:
               selectedIscontoType === "Yüzdesel"
                 ? `% ${iscontoForm.inputValue}  ind.`
                 : selectedIscontoType === "Tutarsal"
-                ? `% ${iscontoForm.inputValue} tutar ind.`
-                : iscontoForm.inputValue,
+                  ? `% ${iscontoForm.iscontoOran} tutar ind.`
+                  : selectedIscontoType === "Alınacak Tutar"
+                    ? `% ${iscontoForm.iscontoOran}`
+                    : ``,
+
             IndFlag:
               selectedIscontoType === "Yüzdesel"
                 ? IndirimTipi.YuzdeIndirim
                 : selectedIscontoType === "Tutarsal"
-                ? IndirimTipi.TutarIndirimi
-                : IndirimTipi.OtoYuzdeIndirim,
+                  ? IndirimTipi.TutarIndirimi
+                  : IndirimTipi.OtoYuzdeIndirim,
             IndOran: iscontoForm.iscontoOran,
             IndTutar: iscontoForm.iscontoTutar,
           }
-        : p
+        : { ...p }
     );
 
     setSelectedSales(updated);
@@ -261,9 +271,15 @@ const ActionModal: React.FC<ActionModalProps> = ({
       return sum + discounted;
     }, 0);
 
+    // setSummary((prev) => ({
+    //   ...prev,
+    //   totalPrice: newTotalPrice,
+    // }));
+
     setSummary((prev) => ({
       ...prev,
       totalPrice: newTotalPrice,
+      TotalLineIsconto: (prev.TotalLineIsconto || 0) + iscontoForm.iscontoTutar,
     }));
     onClose();
     resetForm();

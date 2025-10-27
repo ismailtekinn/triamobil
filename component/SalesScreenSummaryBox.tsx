@@ -59,6 +59,14 @@ const SalesScreenSummaryBox = () => {
                       {summary.totalStock} Ürün
                     </Text>
                   </View>
+                  <View style={styles.summaryItemInline}>
+                    <Text
+                      style={[styles.summaryLabel, styles.totalMiddlePrice]}
+                    >
+                      Toplam Satır İsconto:{" "}
+                      {summary.TotalLineIsconto?.toFixed(2) || 0} ₺
+                    </Text>
+                  </View>
 
                   {/* Müşteri bilgisi en alt köşeye sabitlendi */}
                   <View style={styles.customerContainer}>
@@ -86,16 +94,17 @@ const SalesScreenSummaryBox = () => {
                     {/* {summary.Isconto} {summary.IndTutar} */}
                   </Text>
                   <Text style={styles.middlePrice}>
-                   -{(summary.IndTutar).toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                    -
+                    {summary.IndTutar.toLocaleString("tr-TR", {
+                      minimumFractionDigits: 2,
+                    })}
                     ₺
                   </Text>
                 </View>
                 {/* 3. Tutar - Alt (Ana/Büyük) */}
                 <Text style={styles.bottomPrice}>
                   {summary.UrunTutar && summary.UrunTutar > 0
-                    ? (
-                        summary.UrunTutar 
-                      ).toLocaleString("tr-TR", {
+                    ? summary.UrunTutar.toLocaleString("tr-TR", {
                         minimumFractionDigits: 2,
                       })
                     : summary.totalPrice.toLocaleString("tr-TR", {
@@ -239,6 +248,11 @@ const styles = StyleSheet.create({
   },
   middlePrice: {
     fontSize: 16,
+    fontWeight: "700",
+    color: "#ffd54f",
+    textAlign: "center",
+  },
+  totalMiddlePrice: {
     fontWeight: "700",
     color: "#ffd54f",
     textAlign: "center",

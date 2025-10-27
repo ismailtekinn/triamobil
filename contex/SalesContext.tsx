@@ -18,9 +18,11 @@ export type SummaryState = {
   totalPrice: number;
   total?: number;
 
+  TotalLineIsconto?: number;
   IndFlag?: number;
   IndOran?: number;
   IndTutar: number;
+
   UrunTutar: number;
   Isconto?: string;
   cancelled?: boolean;
@@ -41,6 +43,7 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
     totalItems: 0,
     totalStock: 0,
     totalPrice: 0,
+    TotalLineIsconto: 0,
     IndFlag: 0,
     IndOran: 0,
     IndTutar: 0,
@@ -48,13 +51,17 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
     UrunTutar: 0,
   });
 
-
   useEffect(() => {
     const newTotalPrice = selectedSale.reduce((sum, item) => {
       const itemPrice = (item.Price || 0) * (item.Stock || 1);
       const discounted = item.IndTutar ? itemPrice - item.IndTutar : itemPrice;
       return sum + discounted;
     }, 0);
+
+    const totalLineIsconto = selectedSale.reduce(
+      (sum, item) => sum + (item.IndTutar || 0),
+      0
+    );
 
     setSummary((prev) => ({
       ...prev,
@@ -64,10 +71,10 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
         (sum, item) => sum + (item.Stock || 0),
         0
       ),
+      TotalLineIsconto: totalLineIsconto,
     }));
   }, [selectedSale]);
 
-  
   return (
     <SalesContext.Provider
       value={{ selectedSale, setSelectedSales, summary, setSummary }}

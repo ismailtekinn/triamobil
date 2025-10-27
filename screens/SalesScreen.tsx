@@ -314,7 +314,6 @@ const SalesScreen = () => {
 
   const handlePrint = async () => {
     try {
-      console.log("sepet console yazdırılıyor: ",selectedSale)
       await printCartReceipt(selectedSale);
       Alert.alert("Başarılı", "Fiş yazdırıldı!");
     } catch (err) {
@@ -379,6 +378,8 @@ const SalesScreen = () => {
   useEffect(() => {
     handleSearch();
     // searchDocument();
+  console.log("sepet console yazdırılıyor: ",selectedSale)
+
   }, [searchData]);
 
   useEffect(() => {
@@ -731,7 +732,7 @@ const SalesScreen = () => {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#fff" },
-  container: { flex: 1, padding: 8 },
+  container: { flex: 1, padding: 20 },
 
   searchBar: {
     flexDirection: "row",
