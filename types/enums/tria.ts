@@ -1,9 +1,10 @@
 export enum IndirimTipi {
   YuzdeIndirim = 0, // yüzde indirim
   TutarIndirimi = 1, // tutar indirimi
-  OtoYuzdeIndirim = 2, // otomatik yüzde indirimi (müşteri kayıtlı ise)
-  ArttirimTutar = 3, // arttırım tutar
-  OtoTutarIndirim = 4, // otomatik tutar indirimi (müşteri kayıtlı ise)
+  AlinacakTutar = 2,
+  OtoYuzdeIndirim = 3, // otomatik yüzde indirimi (müşteri kayıtlı ise)
+  ArttirimTutar = 4, // arttırım tutar
+  OtoTutarIndirim = 5, // otomatik tutar indirimi (müşteri kayıtlı ise)
 }
 
 export enum MüşteriAramaTipi {
@@ -27,7 +28,6 @@ export enum SearchOptionTitles {
   VergiDairesi = "Vergi Dairesine Göre Ara",
   VergiNumarasi = "Vergi Numarasına Göre Ara",
 }
-
 
 export enum SearchOptionValues {
   AdTcKartNo = 7,

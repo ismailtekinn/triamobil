@@ -6,22 +6,25 @@ import { AddCustomerFormProvider } from "../contex/customer/addCustomerFormConte
 import { KullaniciProvider } from "../contex/kullaniciContext";
 import { AutoLoginProvider } from "../contex/settings/autoLoginContext";
 import { MenuProccesProvider } from "../contex/salesscreen/MenuProccesContext";
+import { SlipProvider } from "../contex/salesscreen/AddSlipContext";
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <AlertProvider>
-      <MenuProccesProvider>
-        <KullaniciProvider>
-          <AutoLoginProvider>
-            <AddCustomerFormProvider>
-              <SelectedCustomerProvider>
-                <AppInner>{children}</AppInner>
-              </SelectedCustomerProvider>
-            </AddCustomerFormProvider>
-          </AutoLoginProvider>
-        </KullaniciProvider>
-      </MenuProccesProvider>
-    </AlertProvider>
+    <SlipProvider>
+      <AlertProvider>
+        <MenuProccesProvider>
+          <KullaniciProvider>
+            <AutoLoginProvider>
+              <AddCustomerFormProvider>
+                <SelectedCustomerProvider>
+                  <AppInner>{children}</AppInner>
+                </SelectedCustomerProvider>
+              </AddCustomerFormProvider>
+            </AutoLoginProvider>
+          </KullaniciProvider>
+        </MenuProccesProvider>
+      </AlertProvider>
+    </SlipProvider>
   );
 };
 

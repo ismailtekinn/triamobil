@@ -55,6 +55,8 @@ import { useMenuProcess } from "../contex/salesscreen/MenuProccesContext";
 
 import productsDataJson from "../assets/products_20000.json";
 import { printCartReceipt } from "../api/escPostRequest";
+import { addSlip } from "../api/addSlip";
+import { useSlip } from "../contex/salesscreen/AddSlipContext";
 
 // export const sampleSalesDeneme: SaleItem[] = [
 //   new SaleItem({
@@ -234,6 +236,7 @@ const SalesScreen = () => {
   const { selectedFileType, setSelectedFileType } = useFileType();
   const { isDiscountApplied } = useSalesCancel();
   const KEYBOARD_HEIGHT = screenHeight * 0.3;
+  const { slip } = useSlip();
 
   const newSectionMaxHeight =
     screenHeight - searchBoxHeight - KEYBOARD_HEIGHT - screenHeight * 0.01;
@@ -249,6 +252,7 @@ const SalesScreen = () => {
   //   timestamp: new Date().toISOString(),
   // };
 
+  //---------------------------Döküman işlemleri başı--------------------
   const data = productsDataJson as ProductsJson; // tip ataması
   const pendingDoc: PendingDocument = {
     customer: selectedCustomer,
@@ -301,17 +305,20 @@ const SalesScreen = () => {
     }
     await clearPendingDocuments();
   };
+  //---------------------------Döküman işlemleri son--------------------
+
   // Ürün seçme methodu
   const handleSelectProduct = (item: SaleItem) => {
     const newItem = new SaleItem({
       ...item,
       Stock: searchQuantity, // sepete eklenen miktar
     });
-    setSelectedSales((prev) => [...prev, newItem]); // her zaman yeni satır eklenir
+    newItem.UrunId = newItem.Index;
+    newItem.Index = Date.now() + Math.random();
+    setSelectedSales((prev) => [...prev, newItem]);
     setSearchText(""); // arama kutusunu temizle
   };
   // Ürün arama methodu
-
   const handlePrint = async () => {
     try {
       await printCartReceipt(selectedSale);
@@ -374,12 +381,18 @@ const SalesScreen = () => {
       console.error("Arama hatası: ", error);
     }
   };
+  const handleAddSlip = async () => {
+    try {
+      const response = await addSlip(slip);
+      console.log("Backend cevabı:", response);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     handleSearch();
     // searchDocument();
-  console.log("sepet console yazdırılıyor: ",selectedSale)
-
   }, [searchData]);
 
   useEffect(() => {
@@ -466,7 +479,7 @@ const SalesScreen = () => {
             <Text style={styles.selectCustomerBtnText}>Müşteri Seç</Text>
           </TouchableOpacity>
         </View>
-        {/* arama textboxının */}
+{/* TODO: Buraya arama textbox ekle */}
         <View style={styles.searchRow}>
           <View
             style={styles.searchBox}
@@ -595,7 +608,7 @@ const SalesScreen = () => {
           </View>
         )} */}
 
-        {/* seçilen ürünlerin listelendiği kısım */}
+{/* TODO: seçilen ürünlerin listelendiği kısım */}
         <View
           style={{
             position: "absolute",
@@ -623,7 +636,7 @@ const SalesScreen = () => {
           />
         </View>
 
-        {/* sağdaki menü butonların ayarlandığı kısım */}
+{/*TODO: sağdaki menü butonların ayarlandığı kısım */}
         <View
           style={[
             styles.fabContainer,
@@ -691,7 +704,8 @@ const SalesScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.fab, { backgroundColor: "#FF3B30" }]}
-              onPress={() => setSaleModalVisible(true)}
+              // onPress={() => setSaleModalVisible(true)}
+              onPress={() => handleAddSlip()}
             >
               <Ionicons name="stop-circle-outline" size={24} color="#fff" />
             </TouchableOpacity>

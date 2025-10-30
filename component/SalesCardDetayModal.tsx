@@ -14,6 +14,7 @@ import { useSales } from "../contex/SalesContext";
 import { IndirimTipi } from "../types/enums/tria";
 import AlertModal from "./AlertModal";
 import { useSalesCancel } from "../contex/salesCancelContext";
+import { calculateDiscountedPrice } from "../utils/func/calculation";
 export type ActionType =
   | "edit"
   | "delete"
@@ -62,7 +63,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
   const [selectedIscontoType, setSelectedIscontoType] = useState("Yüzdesel"); // varsayılan seçenek
   const dropdownOptions = ["Yüzdesel", "Tutarsal", "Alınacak Tutar"];
 
-  console.log("İsconto modalında data console yazdırılıyor: ",data)
   const {
     isDiscountApplied,
     setIsDiscountApplied,
@@ -70,23 +70,62 @@ const ActionModal: React.FC<ActionModalProps> = ({
     setIscontoApplied,
   } = useSalesCancel();
 
+  // const handleConfirm = () => {
+  //   if (count <= 0) {
+  //     setAlertMessage("Adet miktarı 0 ve altında olamaz");
+  //     setAlertModalVisible(true);
+  //     return;
+  //   }
+  //   const updated = selectedSale.map((p) =>
+  //     p.Index === data.itemId
+  //       ? {
+  //           ...p,
+  //           Stock: count,
+  //           Tutar: count * (p.Price ?? 0),
+  //         }
+  //       : p
+  //   );
+
+  //   setSelectedSales(updated);
+  //   onClose();
+  // };
+
   const handleConfirm = () => {
     if (count <= 0) {
       setAlertMessage("Adet miktarı 0 ve altında olamaz");
       setAlertModalVisible(true);
       return;
     }
-    const updated = selectedSale.map((p) =>
-      p.Index === data.itemId
-        ? {
-            ...p,
-            Stock: count,
-            Tutar: count * (p.Price ?? 0), 
-          }
-        : p
-    );
+
+    const updated = selectedSale.map((p) => {
+      if (p.Index === data.itemId) {
+        // Oransal indirim hesapla
+        const { discountAmount } = calculateDiscountedPrice(p, count);
+
+        return {
+          ...p,
+          Stock: count,
+          Tutar: count * (p.Price ?? 0), // indirimsiz toplam
+          IndTutar: discountAmount, // indirim miktarı
+        };
+      }
+      return p;
+    });
 
     setSelectedSales(updated);
+
+    // Sepet toplamı: indirim dahil
+    const newTotalPrice = updated.reduce((sum, item) => {
+      const lineTotal = (item.Price || 0) * (item.Stock || 0);
+      const discountedLine = lineTotal - (item.IndTutar || 0);
+      return sum + discountedLine;
+    }, 0);
+
+    setSummary((prev) => ({
+      ...prev,
+      totalPrice: newTotalPrice,
+    }));
+
     onClose();
   };
 
@@ -236,12 +275,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
       p.Index === data.itemId
         ? {
             ...p,
-            // Isconto:
-            //   selectedIscontoType === "Yüzdesel"
-            //     ? `% ${iscontoForm.inputValue}  ind.`
-            //     : selectedIscontoType === "Tutarsal"
-            //     ? `% ${iscontoForm.inputValue} tutar ind.`
-            //     : iscontoForm.inputValue,
             Isconto:
               selectedIscontoType === "Yüzdesel"
                 ? `% ${iscontoForm.inputValue}  ind.`
@@ -256,9 +289,9 @@ const ActionModal: React.FC<ActionModalProps> = ({
                 ? IndirimTipi.YuzdeIndirim
                 : selectedIscontoType === "Tutarsal"
                   ? IndirimTipi.TutarIndirimi
-                  : IndirimTipi.OtoYuzdeIndirim,
+                  : IndirimTipi.AlinacakTutar,
             IndOran: iscontoForm.iscontoOran,
-            IndTutar: iscontoForm.iscontoTutar,
+            IndTutar: parseFloat(iscontoForm.iscontoTutar.toFixed(2)),
           }
         : { ...p }
     );
@@ -271,11 +304,11 @@ const ActionModal: React.FC<ActionModalProps> = ({
       return sum + discounted;
     }, 0);
 
-    // setSummary((prev) => ({
-    //   ...prev,
-    //   totalPrice: newTotalPrice,
-    // }));
-
+    console.log("Güncellenecek item:", data.itemId);
+    console.log(
+      "Mevcut itemler:",
+      selectedSale.map((p) => p.Index)
+    );
     setSummary((prev) => ({
       ...prev,
       totalPrice: newTotalPrice,
