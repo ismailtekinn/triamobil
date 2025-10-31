@@ -65,6 +65,9 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
 
     setSummary((prev) => ({
       ...prev,
+      // UrunTutar:newTotalPrice,
+      UrunTutar: selectedSale.reduce((sum, item) => sum + (item.Price || 0) * (item.Stock || 1), 0),
+
       totalPrice: newTotalPrice,
       totalItems: selectedSale.length,
       totalStock: selectedSale.reduce(

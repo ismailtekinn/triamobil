@@ -83,7 +83,7 @@ const SalesScreenSummaryBox = () => {
               <View style={styles.rightColumn}>
                 {/* 1. Tutar - Üst */}
                 <Text style={styles.topPrice}>
-                  {summary.totalPrice.toLocaleString("tr-TR", {
+                  {summary.UrunTutar.toLocaleString("tr-TR", {
                     minimumFractionDigits: 2,
                   })}
                   ₺
@@ -103,13 +103,16 @@ const SalesScreenSummaryBox = () => {
                 </View>
                 {/* 3. Tutar - Alt (Ana/Büyük) */}
                 <Text style={styles.bottomPrice}>
-                  {summary.UrunTutar && summary.UrunTutar > 0
+                  {/* {summary.UrunTutar && summary.UrunTutar > 0
                     ? summary.UrunTutar.toLocaleString("tr-TR", {
                         minimumFractionDigits: 2,
                       })
                     : summary.totalPrice.toLocaleString("tr-TR", {
                         minimumFractionDigits: 2,
-                      })}
+                      })} */}
+                  {summary.totalPrice.toLocaleString("tr-TR", {
+                    minimumFractionDigits: 2,
+                  })}
                   ₺
                 </Text>
               </View>

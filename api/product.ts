@@ -1,4 +1,4 @@
-import { API_URL, API_URL101 } from "../constants/constant";
+import { API_URL, API_URL101, URUN_ARA } from "../constants/constant";
 import {
   ProductDataItem,
   SearchProductResponse,
@@ -159,8 +159,8 @@ export async function searchProduct( // Fonksiyon tanımı
   params: SearchProductFields // Parametre tipini al
 ): Promise<ProductDataItem[]> {
   try {
-    const url = API_URL101 + "TriaRestEczane/UrunAra"; // API URL
-    const response = await fetch(url, {
+    // const url = API_URL101 + "TriaRestEczane/UrunAra"; // API URL
+    const response = await fetch(URUN_ARA, {
       method: "POST", // POST metodu
       headers: { "Content-Type": "application/json" }, // Başlık
       body: JSON.stringify(params), // Parametreyi stringe çevir

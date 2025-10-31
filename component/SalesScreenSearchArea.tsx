@@ -133,7 +133,7 @@ const SalesScreenSearchArea: React.FC<SalesScreenSearchAreaProps> = ({
 
           {/* Seç Butonu - Her zaman görünür */}
           <TouchableOpacity
-            style={styles.buttonCell}
+           style={[styles.buttonCell, { zIndex: 10 }]}
             onPress={() => {
               if (isDiscountApplied) {
                 setAlertMessage(

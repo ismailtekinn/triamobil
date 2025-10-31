@@ -123,6 +123,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     setSummary((prev) => ({
       ...prev,
+      UrunTutar: prev.UrunTutar,
       totalPrice: newTotalPrice,
     }));
 
@@ -151,7 +152,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
     onClose();
     setSummary((prev) => ({
       ...prev,
-      UrunTutar: katilimPayi - iscontoForm.iscontoTutar,
+      // UrunTutar: katilimPayi - iscontoForm.iscontoTutar,
+      UrunTutar: prev.UrunTutar,
       IndOran: iscontoForm.iscontoOran,
       IndFlag:
         selectedIscontoType === "Yüzdesel"
@@ -311,6 +313,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
     );
     setSummary((prev) => ({
       ...prev,
+      // UrunTutar: prev.UrunTutar,
       totalPrice: newTotalPrice,
       TotalLineIsconto: (prev.TotalLineIsconto || 0) + iscontoForm.iscontoTutar,
     }));
@@ -348,7 +351,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
       // iscontoOran: numericValue,
       iscontoOran: parseFloat(iscontOranı.toFixed(2)),
       iscontoTutar: iscontoTutar,
-      urunTutar: parseFloat(urunTutar.toFixed(2)),
+      // urunTutar: parseFloat(urunTutar.toFixed(2)),
+      urunTutar: prev.urunTutar,
     }));
   }, [iscontoForm.inputValue, selectedIscontoType, katilimPayi]);
 

@@ -57,6 +57,8 @@ import productsDataJson from "../assets/products_20000.json";
 import { printCartReceipt } from "../api/escPostRequest";
 import { addSlip } from "../api/addSlip";
 import { useSlip } from "../contex/salesscreen/AddSlipContext";
+import { useConvertSlipData } from "../utils/func/convertSlipData";
+import { mapProductToSaleItem } from "../utils/func/saleItemMapper";
 
 // export const sampleSalesDeneme: SaleItem[] = [
 //   new SaleItem({
@@ -236,7 +238,7 @@ const SalesScreen = () => {
   const { selectedFileType, setSelectedFileType } = useFileType();
   const { isDiscountApplied } = useSalesCancel();
   const KEYBOARD_HEIGHT = screenHeight * 0.3;
-  const { slip } = useSlip();
+  const convertSlipData = useConvertSlipData();
 
   const newSectionMaxHeight =
     screenHeight - searchBoxHeight - KEYBOARD_HEIGHT - screenHeight * 0.01;
@@ -353,22 +355,27 @@ const SalesScreen = () => {
       if (response) {
         setLoading(false);
       }
+
       const startIndex = searchProducts.length;
-      const saleItems: SaleItem[] = response.map(
-        (item, index) =>
-          new SaleItem({
-            Index: startIndex + index + 1,
-            ProductName: item.MAL_ADI,
-            Barcode: Number(item.BARKOD),
-            Stock: Math.abs(Number(item.BAKIYE)),
-            Price: Number(item.SATIS_FIYATI_1.replace(",", ".")),
-            VatRate: Number(item.SATIS_KDV),
-            Rayon: item.REYON_ADI,
-            Currency: "TL",
-            UrunId: Number(item.ID),
-          })
+
+      const saleItems: SaleItem[] = response.map((item, index) =>
+        mapProductToSaleItem(item, index, startIndex)
       );
-      // setSearchProducts(saleItems);
+      // const startIndex = searchProducts.length;
+      // const saleItems: SaleItem[] = response.map(
+      //   (item, index) =>
+      //     new SaleItem({
+      //       Index: startIndex + index + 1,
+      //       ProductName: item.MAL_ADI,
+      //       Barcode: Number(item.BARKOD),
+      //       Stock: Math.abs(Number(item.BAKIYE)),
+      //       Price: Number(item.SATIS_FIYATI_1.replace(",", ".")),
+      //       VatRate: Number(item.SATIS_KDV),
+      //       Rayon: item.REYON_ADI,
+      //       Currency: "TL",
+      //       UrunId: Number(item.ID),
+      //     })
+      // );
       setSearchProducts((prev) =>
         currentPage === 0 ? saleItems : [...prev, ...saleItems]
       );
@@ -381,10 +388,14 @@ const SalesScreen = () => {
       console.error("Arama hatası: ", error);
     }
   };
+
   const handleAddSlip = async () => {
     try {
-      const response = await addSlip(slip);
-      console.log("Backend cevabı:", response);
+      // console.log("seçilen veriler console yazdırılıyor: ", selectedSale)
+      const slipData = convertSlipData(selectedSale, summary);
+      console.log("slip verisi console yazdırılıyor : ", slipData);
+      // const response = await addSlip(slip);
+      // console.log("Backend cevabı:", response);
     } catch (err) {
       console.error(err);
     }
@@ -479,7 +490,7 @@ const SalesScreen = () => {
             <Text style={styles.selectCustomerBtnText}>Müşteri Seç</Text>
           </TouchableOpacity>
         </View>
-{/* TODO: Buraya arama textbox ekle */}
+        {/* TODO: Ürün arama textbox'ı  */}
         <View style={styles.searchRow}>
           <View
             style={styles.searchBox}
@@ -608,15 +619,15 @@ const SalesScreen = () => {
           </View>
         )} */}
 
-{/* TODO: seçilen ürünlerin listelendiği kısım */}
+        {/* TODO: seçilen ürünlerin listelendiği kısım */}
         <View
           style={{
             position: "absolute",
-            top: 2.5 * (searchBoxY + searchBoxHeight) + 10, // Arama kutusunun hemen altından başlar
+            top: 2.5 * (searchBoxY + searchBoxHeight) + 10,
             left: 0,
             right: 0,
             borderRadius: 10,
-            bottom: screenHeight * 0.14 + 10, // Klavyenin üstüne kadar biter
+            bottom: screenHeight * 0.14 + 10,
           }}
         >
           <FlatList
@@ -636,7 +647,7 @@ const SalesScreen = () => {
           />
         </View>
 
-{/*TODO: sağdaki menü butonların ayarlandığı kısım */}
+        {/*TODO: sağdaki menü butonların ayarlandığı kısım */}
         <View
           style={[
             styles.fabContainer,
@@ -720,6 +731,7 @@ const SalesScreen = () => {
           />
         </View> */}
 
+        {/* TODO: SAYFA İÇİNDE Kİ GENEL AÇILAN MODAL  */}
         <SaleScreenModal
           visible={saleModalVisible}
           onClose={() => setSaleModalVisible(false)}
@@ -736,6 +748,8 @@ const SalesScreen = () => {
           visible={activeModal !== null}
           onClose={() => setActiveModal(null)}
         />
+
+        {/*TODO: Genel toplamın olduğu alan  */}
         <View style={styles.summaryContainer}>
           <SalesScreenSummaryBox />
         </View>
