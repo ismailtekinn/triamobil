@@ -1,8 +1,8 @@
 import axios from "axios";
-import { Register, SignIn } from "../types/authType";
+import { Register, SearchTempBelgeId, SignIn } from "../types/authType";
 import Constants from "expo-constants";
 import https from "https";
-import { API_URL, LOGIN_URL } from "../constants/constant";
+import { API_URL, LOGIN_URL, TEMPBELGE_ID_VER } from "../constants/constant";
 import { BackendResponse } from "../types/apiresponse/newGenericResponseType";
 
 // export async function login(params: SignIn) {
@@ -116,5 +116,40 @@ export async function register(params: Register) {
   } catch (error) {
     console.error(error);
     throw new Error("An error occurred during register");
+  }
+}
+
+export async function tempBelgeIDVer(params: SearchTempBelgeId) {
+  try {
+    console.log("belge ıd fonksiyonu çağrıldı ")
+    const response = await Promise.race([
+      fetch(TEMPBELGE_ID_VER, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      }),
+    ]);
+    console.log("tria belge ıd sorgulama sonucu konsole yazdırılıyor : ", response )
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw {
+        title: "Belge Sorgulama Hatası",
+        message: errorData.error || "Belge ıd alınamadı",
+      };
+    }
+    const raw = await response.json();
+    const data: BackendResponse = Object.fromEntries(
+      Object.entries(raw).map(([k, v]) => [
+        k,
+        k.startsWith("SQL_Data") && typeof v === "string" ? JSON.parse(v) : v,
+      ])
+    ) as BackendResponse;
+    return data;
+  } catch (error: any) {
+    if (typeof error === "string") throw { title: "Hata", message: error };
+    throw {
+      title: error.title || "Hata",
+      message: error.message || "Bir hata oluştu",
+    };
   }
 }

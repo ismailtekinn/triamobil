@@ -59,6 +59,7 @@ import { addSlip } from "../api/addSlip";
 import { useSlip } from "../contex/salesscreen/AddSlipContext";
 import { useConvertSlipData } from "../utils/func/convertSlipData";
 import { mapProductToSaleItem } from "../utils/func/saleItemMapper";
+import { tempBelgeIDVer } from "../api/auth";
 
 // export const sampleSalesDeneme: SaleItem[] = [
 //   new SaleItem({
@@ -315,7 +316,7 @@ const SalesScreen = () => {
       ...item,
       Stock: searchQuantity, // sepete eklenen miktar
     });
-    newItem.UrunId = newItem.Index;
+    // newItem.UrunId = newItem.Index;
     newItem.Index = Date.now() + Math.random();
     setSelectedSales((prev) => [...prev, newItem]);
     setSearchText(""); // arama kutusunu temizle
@@ -392,8 +393,10 @@ const SalesScreen = () => {
   const handleAddSlip = async () => {
     try {
       // console.log("seçilen veriler console yazdırılıyor: ", selectedSale)
+      // console.log("slip verisi console yazdırılıyor : ", summary);
+
       const slipData = convertSlipData(selectedSale, summary);
-      console.log("slip verisi console yazdırılıyor : ", slipData);
+      // console.log("slip verisi console yazdırılıyor : ", slipData);
       // const response = await addSlip(slip);
       // console.log("Backend cevabı:", response);
     } catch (err) {

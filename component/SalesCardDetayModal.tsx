@@ -168,6 +168,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
             ? `% ${iscontoForm.iscontoOran} tutar ind.`
             : iscontoForm.inputValue,
       IndTutar: iscontoForm.iscontoTutar,
+      discount: prev.totalPrice - iscontoForm.iscontoTutar
     }));
     resetForm();
   };
@@ -212,6 +213,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       UrunTutar: prev.totalPrice, // indirim uygulanmış toplam
       IndTutar: 0,
       IndOran: 0,
+      discount:0,
       IndFlag: undefined,
       Isconto: undefined,
     }));
@@ -315,6 +317,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       ...prev,
       // UrunTutar: prev.UrunTutar,
       totalPrice: newTotalPrice,
+      discount:newTotalPrice,
       TotalLineIsconto: (prev.TotalLineIsconto || 0) + iscontoForm.iscontoTutar,
     }));
     onClose();
@@ -328,6 +331,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     if (selectedIscontoType === "Yüzdesel") {
       urunTutar = katilimPayi * (1 - numericValue / 100); // yeni fiyat
+      
       iscontoTutar = katilimPayi - urunTutar; // fark
       iscontOranı = numericValue;
     } else if (selectedIscontoType === "Tutarsal") {

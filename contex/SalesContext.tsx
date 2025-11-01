@@ -18,6 +18,7 @@ export type SummaryState = {
   totalPrice: number;
   total?: number;
 
+  discount:number;
   TotalLineIsconto?: number;
   IndFlag?: number;
   IndOran?: number;
@@ -43,6 +44,7 @@ export const SalesProvider = ({ children }: { children: ReactNode }) => {
     totalItems: 0,
     totalStock: 0,
     totalPrice: 0,
+    discount:0,
     TotalLineIsconto: 0,
     IndFlag: 0,
     IndOran: 0,

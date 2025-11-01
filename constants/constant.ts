@@ -14,4 +14,5 @@ export const URUN_ARA = API_URL101 + "TriaRestEczane/UrunAra";
 export const LOGIN_URL = `${API_URL8082_Local}KullaniciSorgula`;
 export const MESLEK_SORGULA_URL = `${API_URL8082_Local}/MeslekSorgula`;
 export const CARI_GROUP_SORGULA_URL = `${API_URL8082_Local}/CariGrupSorgula`;
+export const TEMPBELGE_ID_VER = `${API_URL8082_Local}/TempBelgeIDVer`;
                             
